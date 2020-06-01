@@ -1,58 +1,62 @@
-// import React from 'react';
-// import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-
-
-
-
-// const LembreteItem = (props) => {
-//     return (
-//         <TouchableOpacity onLongPress={props.onDelete.bind(this, props.chave)}>
-//             <View style={styles.itemNaLista}>
-//                 <Text>{props.lembrete}</Text>
-//             </View>
-//         </TouchableOpacity>       
-//     );
-// }
-
-// const styles = StyleSheet.create({
-//     itemNaLista: {
-//         padding: 12,
-//         backgroundColor: '#CCC',
-//         borderColor: "black",
-//         borderWidth: 1,
-//         marginBottom: 8,
-//         borderRadius: 8
-//     }
-// });
-
-// export default LembreteItem;
-
-
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import Cartao from './Cartao';
-import Cores from '../cores/cores'
-import SombrasLembrete from '../sombras/SombrasLembreteItem'
-import MedidasLembrete from '../medidas/MedidasLembreteItem'
 
 const LembreteItem = (props) => {
-    
-    const handleClick = () => {
-        Alert.alert('Clique longo para excluir o contato')
+
+    const confirmaDelete = () => {
+
+        Alert.alert(
+            'Excluir!',
+            'Tem deseja que quer excluir o usuario ' + props.nome,
+            [
+                {
+                    text: 'OK',
+                    style: 'default',
+                    onPress: deletaUsuario
+                },
+                {
+                    text: 'CANCEL',
+                    style: 'default',
+                    
+                }
+            ]
+        );
     }
+
+    const deletaUsuario = () => {
+        console.log("props.chave " + props.chave)
+        props.onDelete.bind(this, props.chave)()
+    }
+
+    const editarTelaUsuario = () => {
+        props.onSelecionaEditarTelaUsuario();
+    }
+
+    const[nome, setNome] = useState();
+    const[telefone,setTelefone] = useState();
 
     return (
         <Cartao>
             <TouchableOpacity 
-            onLongPress={props.onDelete.bind(this, props.chave)}
-            onPress={handleClick}
+            onLongPress={
+                    confirmaDelete
+            }
+            onPress={() => {
+                    // props.onSelecionaUsuarioId(props.chave);
+                    // props.onSelecionaUsuarioNome(props.nome);
+                    // props.onSelecionaUsuarioTelefone(props.telefone);
+                    // editarTelaUsuario();
+                    //console.log("Propriedades dentro do onpress" + props.chave + props.nome + props.telefone)
+                    console.log("Propriedades dentro do onpress" + props)
+                    props.onSelect();
+                } 
+            }
             >
-                <View 
-                    style={styles.itemNaLista}  
-                    backgroundColor={Cores.accent}
-                    marginBottom={MedidasLembrete.marginBottom}
-                >
-                    <Text>{props.lembrete}</Text>
+                <View style={styles.itemNaLista}>
+                    {/* <Text>ID: {props.id}</Text> */}
+                    <Text>Nome: {props.nome}</Text>
+                    <Text>Telefone: {props.telefone}</Text>
                 </View>
             </TouchableOpacity>        
         </Cartao>
@@ -61,7 +65,10 @@ const LembreteItem = (props) => {
 
 const styles = StyleSheet.create({
     itemNaLista: {
-        borderRadius: 8
+        borderRadius: 8,
+        marginBottom: 8,
+        marginTop: 5,
+        color: 'green',
     }
 });
 

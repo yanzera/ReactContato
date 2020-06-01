@@ -1,52 +1,84 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {View, TextInput, Button, StyleSheet} from 'react-native';
-import MedidasLembreteInput from '../medidas/MedidasLembreteInput'
-import SombrasLembreteInput from '../sombras/SombrasLembreteInput'
+import { useDispatch } from 'react-redux';
+import * as usuariosActions from '../store/usuarios-actions'
+import TiraFoto from './TiraFoto';
+import CapturarLocalizacao from './CapturarLocalizacao';
 
-const LembreteInput = (props) =>{
-    const [nome, setNome] = useState ('');
+const LembreteInput = (props) => {
 
-    const [telefone, setTelefone] = useState ('');
+    const dispatch = useDispatch();
+
+    const [nome, setNome] = useState('');
+
+    const [telefone, setTelefone] = useState('');
+
+    const [imagemURI, setImagemURI] = useState();
+
+    const [latitude, setLatitude] = useState("");
+
+    const [longitude, setLongitude] = useState("");
+
 
     const capturarNome = (nome) => {
-        setNome(nome);    
+        setNome(nome);
     }
 
     const capturarTelefone = (telefone) => {
-      setTelefone(telefone);    
-  }
+        setTelefone(telefone);
+    }
 
-  return (
-    <View
-        flexDirection={MedidasLembreteInput.LembreteInputFlexDirectionView}
-        justifyContent={MedidasLembreteInput.LembreteInputJustifyContentView}
-        alignItems={MedidasLembreteInput.LembreteInputAlignItemsView}
-        marginBottom={MedidasLembreteInput.LembreteInputMarginBottomView}
-    >
+    const fotoTirada = imagemURI => {
+      setImagemURI(imagemURI);
+    }
+
+    const capturaLatLng = (latitude, longitude) => { 
+      setLatitude(latitude);
+      setLongitude(longitude);
+    }
+
+    const adicionarUsuarioInput = () => {
+      console.log("Nome: " + nome + " " + "\nTelefone: " + telefone + "\nLat " + latitude + "\nLongitude: " + longitude);
+      dispatch(usuariosActions.addUsuario(nome,telefone, imagemURI, latitude, longitude));
+    }
+
+    return (
+    <View style={styles.tela}>
     <TextInput 
       placeholder="Nome..."
-      padding={MedidasLembreteInput.LembreteInputPadding}
-      marginBottom={MedidasLembreteInput.UsuairoInputMarginBttm}
-      borderBottomColor={SombrasLembreteInput.LembreteInputColor}
+      style={styles.form}
       onChangeText={capturarNome}
       value={nome}
     />
     <TextInput 
       placeholder="Telefone..."
-      
-      padding={MedidasLembreteInput.LembreteInputPadding}
-      marginBottom={MedidasLembreteInput.UsuairoInputMarginBttm}
-      borderBottomColor={SombrasLembreteInput.LembreteInputColor}
+      style={styles.form}
       onChangeText={capturarTelefone}
       value={telefone}
     />
+    <TiraFoto onFotoTirada={fotoTirada} />
+    <CapturarLocalizacao onCapturaLatLng={capturaLatLng}/>
     <Button 
-      title="+"
-      onPress={() => {props.onAdicionarLembrete(nome, telefone)}}
+      title="Salvar usuario"
+      onPress={adicionarUsuarioInput}
+      // onPress={() => {props.onAdicionarUsuario(nome, telefone)}}
     />
     </View>
     );
 }
+
+const styles = StyleSheet.create({
+    tela:{
+      flexDirection: 'column',
+      marginBottom: 6,
+      justifyContent: 'space-between',
+    },
+    form: { 
+      padding: 2,
+      marginBottom: 2,
+      borderBottomColor: 'black'
+    }
+})
 
 
 export default LembreteInput;
